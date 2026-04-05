@@ -1,32 +1,48 @@
-# 🚀 Agentic ChatGPT System (FastAPI Backend)
+# 🚀 Agentic ChatGPT System (Production-Ready FastAPI Backend)
 
-A production-ready **Agentic AI backend system** built with FastAPI, enabling:
+A scalable, production-ready **Agentic AI backend system** built with FastAPI, supporting:
 
 * 🤖 Multi-agent orchestration (SQL, API, JIRA, RAG)
-* 🧠 Pluggable LLM (OpenAI / AWS Bedrock / Local models)
-* 📄 Retrieval-Augmented Generation (RAG)
-* ⚡ Scalable REST API for AI-powered applications
+* 🧠 Real LLM integration (OpenAI / AWS Bedrock-ready)
+* 📄 Retrieval-Augmented Generation (RAG) with embeddings
+* ⚙️ Config-driven architecture using environment variables
+* ⚡ Async, modular, and extensible backend
 
 ---
 
 ## 🧠 Architecture
 
-```bash
-Client (Postman / Curl / UI)
-        ↓
-FastAPI Backend (Agent Orchestrator)
-        ↓
------------------------------------
-| Agents                          |
-| - SQL Agent                     |
-| - API Agent                     |
-| - JIRA Generator                |
-| - RAG Retriever                 |
------------------------------------
-        ↓
-LLM (MiniGPT / OpenAI / Bedrock)
-        ↓
-Vector Store (FAISS / Pinecone)
+```mermaid
+flowchart TD
+
+    A[Client (Postman / Curl / UI)]
+    B[FastAPI Backend<br/>Agent Orchestrator]
+
+    subgraph Agents Layer
+        C1[SQL Agent]
+        C2[API Agent]
+        C3[JIRA Agent]
+        C4[RAG Agent]
+    end
+
+    D[LLM Layer<br/>(OpenAI / Bedrock / Local)]
+    E[Embedding Model<br/>(Sentence Transformers)]
+    F[Vector Store<br/>(FAISS)]
+
+    A --> B
+    B --> C1
+    B --> C2
+    B --> C3
+    B --> C4
+
+    C1 --> D
+    C2 --> D
+    C3 --> D
+    C4 --> E
+
+    E --> F
+    F --> C4
+    C4 --> D
 ```
 
 ---
@@ -38,6 +54,7 @@ agentic-chatgpt-system/
 │
 ├── backend/
 │   ├── main.py
+│   ├── config.py
 │   ├── requirements.txt
 │   │
 │   ├── agents/
@@ -58,6 +75,9 @@ agentic-chatgpt-system/
 │   ├── schemas/
 │   │   └── chat.py
 │   │
+│   ├── utils/
+│   │   └── logger.py
+│   │
 │   └── data/
 │       ├── sample.db
 │       └── docs/
@@ -65,6 +85,7 @@ agentic-chatgpt-system/
 ├── ingest.py
 ├── postman/
 │   └── agentic-chatgpt.postman_collection.json
+├── .env
 └── README.md
 ```
 
@@ -75,6 +96,18 @@ agentic-chatgpt-system/
 * Python 3.9+
 * pip
 * Virtual environment (recommended)
+* OpenAI API key (or AWS Bedrock credentials)
+
+---
+
+## 🔐 Environment Configuration
+
+Create a `.env` file in root:
+
+```env
+OPENAI_API_KEY=your_api_key_here
+MODEL_NAME=gpt-4o-mini
+```
 
 ---
 
@@ -113,7 +146,15 @@ python -m pip install -r requirements.txt
 
 ---
 
-### 🔹 4. Run FastAPI Server
+### 🔹 4. Ingest Documents (RAG Setup)
+
+```bash
+python ingest.py
+```
+
+---
+
+### 🔹 5. Run FastAPI Server
 
 ```bash
 python -m uvicorn main:app --reload
@@ -155,8 +196,6 @@ python -m uvicorn main:app --reload
 
 ## 📦 Postman Collection
 
-This repo includes a ready-to-use Postman collection:
-
 ```bash
 postman/agentic-chatgpt.postman_collection.json
 ```
@@ -165,15 +204,15 @@ postman/agentic-chatgpt.postman_collection.json
 
 1. Open Postman
 2. Click **Import**
-3. Select the collection file
+3. Select collection file
 
 ---
 
-## 🧪 Sample Test Prompts
+## 🧪 Sample Prompts
 
 * "Create JIRA story for payment API"
 * "Fetch SQL data from sales table"
-* "Call API for latest crypto price"
+* "Call API for bitcoin price"
 * "Explain RAG architecture"
 
 ---
@@ -183,14 +222,14 @@ postman/agentic-chatgpt.postman_collection.json
 ### 🔹 SQL Agent
 
 * Executes database queries
-* Extendable to LLM-based Text-to-SQL
+* Extendable to Text-to-SQL using LLM
 
 ---
 
 ### 🔹 API Agent
 
 * Calls external APIs
-* Easily configurable for any REST service
+* Easily configurable
 
 ---
 
@@ -207,29 +246,26 @@ Generates structured user stories:
 
 ### 🔹 RAG Agent
 
-* Retrieves context from documents
-* Uses vector similarity search
+* Retrieves relevant context
+* Uses embeddings + vector similarity
 
 ---
 
-## 📄 RAG (Document Support)
+## 📄 RAG Workflow
 
-Add documents to:
+1. Add documents to:
 
 ```bash
 backend/data/docs/
 ```
 
----
+2. Run ingestion:
 
-### 📥 Extend Ingestion
+```bash
+python ingest.py
+```
 
-Use `ingest.py` to:
-
-* Load PDFs
-* Chunk content
-* Generate embeddings
-* Store in vector DB
+3. Query via `/chat`
 
 ---
 
@@ -241,12 +277,22 @@ Update:
 backend/models/llm.py
 ```
 
-Supported options:
+Supported:
 
-* OpenAI
+* OpenAI (default)
 * AWS Bedrock
 * Hugging Face
-* Local MiniGPT
+* Local models
+
+---
+
+## 🧾 Logging
+
+Basic logging included:
+
+```bash
+backend/utils/logger.py
+```
 
 ---
 
@@ -260,21 +306,23 @@ docker-compose up --build
 
 ## 🚀 Future Enhancements
 
-* 🔄 Streaming responses (real-time)
+* 🔄 Streaming responses (token-level)
 * 🧠 Memory (chat history)
 * 🔐 Authentication (JWT / OAuth)
-* 📊 Observability & logging
+* 📊 Monitoring (Prometheus, Grafana)
 * ☁️ AWS deployment (ECS / Lambda / Bedrock)
 * 🧩 LangGraph multi-agent workflows
+* 🗄️ PostgreSQL + pgvector
 
 ---
 
 ## 🧠 Tech Stack
 
 * Backend: FastAPI
+* LLM: OpenAI / Bedrock (pluggable)
+* Embeddings: Sentence Transformers
+* Vector DB: FAISS
 * Agents: Custom orchestration
-* Vector Store: FAISS
-* LLM: Pluggable
 
 ---
 
