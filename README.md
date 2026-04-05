@@ -15,19 +15,19 @@ A scalable, production-ready **Agentic AI backend system** built with FastAPI, s
 ```mermaid
 flowchart TD
 
-    A[Client (Postman / Curl / UI)]
-    B[FastAPI Backend<br/>Agent Orchestrator]
+    A[Client - Postman / Curl / UI]
+    B[FastAPI Backend - Orchestrator]
 
-    subgraph Agents Layer
+    subgraph Agents
         C1[SQL Agent]
         C2[API Agent]
         C3[JIRA Agent]
         C4[RAG Agent]
     end
 
-    D[LLM Layer<br/>(OpenAI / Bedrock / Local)]
-    E[Embedding Model<br/>(Sentence Transformers)]
-    F[Vector Store<br/>(FAISS)]
+    D[LLM Layer]
+    E[Embedding Model]
+    F[Vector Store]
 
     A --> B
     B --> C1
@@ -38,8 +38,8 @@ flowchart TD
     C1 --> D
     C2 --> D
     C3 --> D
-    C4 --> E
 
+    C4 --> E
     E --> F
     F --> C4
     C4 --> D
@@ -204,7 +204,7 @@ postman/agentic-chatgpt.postman_collection.json
 
 1. Open Postman
 2. Click **Import**
-3. Select collection file
+3. Select the collection file
 
 ---
 
