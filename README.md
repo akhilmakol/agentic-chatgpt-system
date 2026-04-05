@@ -1,2 +1,3 @@
-# agentic-chatgpt-system
-A mini enterprise ChatGPT + Agent system
+# Agentic ChatGPT System
+
+Full stack AI agent system.
