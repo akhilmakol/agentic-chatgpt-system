@@ -1,5 +1,6 @@
-import numpy as np
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def get_embedding(text: str):
-    # Placeholder embedding
-    return np.random.rand(384).astype("float32")
+    return model.encode(text)
