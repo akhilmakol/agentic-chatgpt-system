@@ -1,17 +1,19 @@
 import faiss
 import numpy as np
 
-docs = [
-    "Agentic AI helps automate workflows",
-    "RAG improves LLM accuracy",
-    "JIRA stories define software requirements"
+documents = [
+    "Agentic AI automates workflows using multiple agents",
+    "RAG improves LLM accuracy using external knowledge",
+    "JIRA stories define agile software requirements"
 ]
 
-index = faiss.IndexFlatL2(384)
-vectors = np.random.rand(len(docs), 384).astype("float32")
+dimension = 384
+index = faiss.IndexFlatL2(dimension)
+
+vectors = np.random.rand(len(documents), dimension).astype("float32")
 index.add(vectors)
 
-def search_vectors(query):
-    q = np.random.rand(1, 384).astype("float32")
-    _, I = index.search(q, 2)
-    return [docs[i] for i in I[0]]
+def search_vectors(query: str):
+    query_vector = np.random.rand(1, dimension).astype("float32")
+    _, indices = index.search(query_vector, k=2)
+    return [documents[i] for i in indices[0]]
