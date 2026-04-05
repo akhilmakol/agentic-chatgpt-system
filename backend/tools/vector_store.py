@@ -1,19 +1,18 @@
 import faiss
 import numpy as np
+from tools.embeddings import get_embedding
 
-documents = [
-    "Agentic AI automates workflows using multiple agents",
-    "RAG improves LLM accuracy using external knowledge",
-    "JIRA stories define agile software requirements"
-]
+documents = []
+index = faiss.IndexFlatL2(384)
 
-dimension = 384
-index = faiss.IndexFlatL2(dimension)
+def add_documents(docs):
+    global documents
+    documents.extend(docs)
 
-vectors = np.random.rand(len(documents), dimension).astype("float32")
-index.add(vectors)
+    vectors = np.array([get_embedding(d) for d in docs]).astype("float32")
+    index.add(vectors)
 
-def search_vectors(query: str):
-    query_vector = np.random.rand(1, dimension).astype("float32")
-    _, indices = index.search(query_vector, k=2)
+def search_vectors(query, k=2):
+    query_vector = np.array([get_embedding(query)]).astype("float32")
+    _, indices = index.search(query_vector, k)
     return [documents[i] for i in indices[0]]
