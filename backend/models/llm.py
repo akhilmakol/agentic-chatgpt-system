@@ -1,2 +1,3 @@
-def call_llm(prompt):
-    return f"[LLM OUTPUT]\n{prompt[:200]}"
+def call_llm(prompt: str):
+    # Replace with OpenAI / Bedrock later
+    return f"[LLM RESPONSE]\n{prompt[:300]}"
